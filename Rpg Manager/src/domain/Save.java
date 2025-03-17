@@ -27,6 +27,8 @@ public class Save{
         } else {
             JOptionPane.showMessageDialog(null, "Nenhuma pasta selecionada", "Aviso", JOptionPane.WARNING_MESSAGE);
         }
+
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     }
 
     public void salvar() {
