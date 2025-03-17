@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 public class GUI extends JFrame {
     private Inventario inventario;
+    private final Save save = new Save();
 
     public GUI() {
         setTitle("RPG MANAGER");
@@ -41,6 +42,7 @@ public class GUI extends JFrame {
         JPanel SavesPainel = new JPanel(new BorderLayout());
         BotaoPainel.add(SavesPainel, BorderLayout.EAST);
 
+        // BOTAO SALVAR
         JButton Salvar = new JButton("Salvar");
         Salvar.setFont(new Font("Arial", Font.PLAIN, 40));
         SavesPainel.add(Salvar, BorderLayout.SOUTH);
@@ -48,11 +50,11 @@ public class GUI extends JFrame {
         Salvar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
-                Save save = new Save();
                 save.salvar();
             }
         });
 
+        // BOTAO CARREGAR
         JButton Carregar = new JButton("Carregar");
         Carregar.setFont(new Font("Arial", Font.PLAIN, 40));
         SavesPainel.add(Carregar, BorderLayout.NORTH);
@@ -60,8 +62,18 @@ public class GUI extends JFrame {
         Carregar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
-                Save save = new Save();
                 save.carregar();
+            }
+        });
+
+        JButton eCaminho = new JButton("Escolher caminho");
+        eCaminho.setFont(new Font("Arial", Font.PLAIN, 40));
+        SavesPainel.add(eCaminho, BorderLayout.CENTER);
+
+        eCaminho.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                save.escolherCaminho();
             }
         });
     }

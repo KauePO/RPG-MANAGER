@@ -5,16 +5,35 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.*;
 
-public class Save extends Component {
+public class Save{
     private DefaultTableModel model = InventarioModel.getModel();
+    private JFileChooser fileChooser = new JFileChooser();
+    private File caminho;
+
+    public Save() {
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        caminho = new File (System.getProperty("user.dir"));
+    }
+
+    public void escolherCaminho() {
+        fileChooser.setDialogTitle("Escolha a pasta do Save");
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setCurrentDirectory(caminho);
+
+        int resultado = fileChooser.showOpenDialog(null);
+        if(resultado == JFileChooser.APPROVE_OPTION) {
+            caminho = fileChooser.getSelectedFile();
+            System.out.println(caminho.getAbsolutePath());
+        } else {
+            JOptionPane.showMessageDialog(null, "Nenhuma pasta selecionada", "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
+    }
 
     public void salvar() {
-        JTable tabela = new JTable(model);
-
-        try ( BufferedWriter writer = new BufferedWriter(new FileWriter("saveRPG.csv")))
-        {
+        try ( BufferedWriter writer = new BufferedWriter(new FileWriter(new File(caminho.getAbsolutePath(), "saveRPG.csv")))){
+            System.out.println(caminho.getAbsolutePath());
             //CABEÇALHO
-            for (int i = 0; i < model.getColumnCount(); i++) {
+           for (int i = 0; i < model.getColumnCount(); i++) {
                 writer.write(model.getColumnName(i));
                 if (i < model.getColumnCount() - 1) {
                     writer.write(",");
@@ -26,20 +45,28 @@ public class Save extends Component {
         for (int i = 0; i < model.getRowCount(); i++) {
             for (int j = 0; j < model.getColumnCount(); j++) {
                 writer.write(model.getValueAt(i,j).toString());
-                if (i < model.getColumnCount() - 1) {
+                if (j < model.getColumnCount() - 1) {
                     writer.write(",");
                 }
             }
             writer.newLine();
         }
         System.out.println("Salvo com sucesso!");
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Dados salvos com sucesso em:\n" + caminho.getAbsolutePath(),
+                    "Sucesso",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
     } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar os dados: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
 }
 
     public void autocarregar(){
-        File arquivo = new File("saveRPG.csv");
+        File arquivo = new File(caminho, "saveRPG.csv");
         if (!arquivo.exists()) {
             return;
         }
@@ -64,15 +91,13 @@ public class Save extends Component {
     }
 
     public void carregar(){
-            // Cria um JFileChooser para seleção do arquivo
-            JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Selecionar arquivo de save"); // Título da janela
 
-            // Opcional: Define o diretório inicial (ex: diretório do projeto)
+            // Define o diretório inicial
             fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
             // Mostra a janela de diálogo "Abrir"
-            int resultado = fileChooser.showOpenDialog(this);
+            int resultado = fileChooser.showOpenDialog(null);
 
             // Verifica se o usuário selecionou um arquivo
             if (resultado != JFileChooser.APPROVE_OPTION) {
@@ -99,7 +124,7 @@ public class Save extends Component {
 
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(
-                        this,
+                        null,
                         "Erro ao carregar: " + e.getMessage(),
                         "Erro",
                         JOptionPane.ERROR_MESSAGE
