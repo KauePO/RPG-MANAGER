@@ -1,13 +1,11 @@
 package domain;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class Inventario extends JFrame {
-    private DefaultTableModel model;
+    private TabelaReordenavel model;
 
     public Inventario() {
         // Configurações do JFrame
@@ -27,6 +25,34 @@ public class Inventario extends JFrame {
         model = InventarioModel.getModel();
         // Cria uma JTable com os dados e colunas
         JTable tabela = new JTable(model);
+
+        //Variaveis para controlar o arraste
+        final int[] pressIndex = {-1};
+
+        tabela.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e){
+                pressIndex[0] = tabela.rowAtPoint(e.getPoint());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e){
+                int releaseIndex = tabela.rowAtPoint(e.getPoint());
+                if (pressIndex[0] != -1 && releaseIndex != -1 && pressIndex[0] != releaseIndex) {
+                    model.moveRow(pressIndex[0], releaseIndex);
+                }
+            }
+        });
+
+        tabela.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                int row = tabela.rowAtPoint(e.getPoint());
+                if (row >= 0) {
+                    tabela.setRowSelectionInterval(row, row);
+                }
+            }
+        });
 
         // Adiciona a tabela a um JScrollPane
         JScrollPane scrollPane = new JScrollPane(tabela);

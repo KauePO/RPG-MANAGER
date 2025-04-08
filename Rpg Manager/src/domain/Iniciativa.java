@@ -42,6 +42,16 @@ public class Iniciativa extends JFrame {
             }
         });
 
+        tabela.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                int row = tabela.rowAtPoint(e.getPoint());
+                if (row >= 0) {
+                    tabela.setRowSelectionInterval(row, row);
+                }
+            }
+        });
+
         // Adiciona a tabela a um JScrollPane
         JScrollPane scrollPane = new JScrollPane(tabela);
 
