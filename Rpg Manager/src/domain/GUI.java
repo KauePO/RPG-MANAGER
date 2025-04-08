@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 public class GUI extends JFrame {
     private Inventario inventario;
+    private Iniciativa iniciativa;
     private final Save save = new Save();
 
     public GUI() {
@@ -66,6 +67,7 @@ public class GUI extends JFrame {
             }
         });
 
+        // BOTAO ESCOLHER CAMINHO
         JButton eCaminho = new JButton("Escolher caminho");
         eCaminho.setFont(new Font("Arial", Font.PLAIN, 40));
         SavesPainel.add(eCaminho, BorderLayout.CENTER);
@@ -74,6 +76,21 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e){
                 save.escolherCaminho();
+            }
+        });
+
+        // BOTAO INICIATIVA
+        JButton Iniciativa = new JButton("Iniciativa");
+        Iniciativa.setFont(new Font("Arial", Font.PLAIN, 40));
+        BotaoPainel.add(Iniciativa, BorderLayout.CENTER);
+
+        Iniciativa.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                if (iniciativa == null) {
+                    iniciativa = new Iniciativa();
+                }
+                iniciativa.setVisible(true);
             }
         });
     }

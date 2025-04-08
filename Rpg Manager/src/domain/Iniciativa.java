@@ -1,32 +1,46 @@
 package domain;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
-public class Inventario extends JFrame {
-    private DefaultTableModel model;
+public class Iniciativa extends JFrame {
+    private TabelaReordenavel model;
 
-    public Inventario() {
+    public Iniciativa() {
         // Configurações do JFrame
-        setTitle("Inventário");
+        setTitle("Iniciativa");
         setSize(400, 300);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setLocationRelativeTo(null); // Centraliza o JFrame na tela
-
-        Save save = new Save();
-        save.autocarregar();
 
         // Cria um painel principal com BorderLayout
         JPanel mainPanel = new JPanel(new BorderLayout());
         this.add(mainPanel);
 
         // Cria um DefaultTableModel sem dados iniciais
-        model = InventarioModel.getModel();
+        model = IniciativaModel.getModel();
         // Cria uma JTable com os dados e colunas
         JTable tabela = new JTable(model);
+        tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        //Variaveis para controlar o arraste
+        final int[] pressIndex = {-1};
+
+        tabela.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e){
+                pressIndex[0] = tabela.rowAtPoint(e.getPoint());
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e){
+                int releaseIndex = tabela.rowAtPoint(e.getPoint());
+                if (pressIndex[0] != -1 && releaseIndex != -1 && pressIndex[0] != releaseIndex) {
+                    model.moveRow(pressIndex[0], releaseIndex);
+                }
+            }
+        });
 
         // Adiciona a tabela a um JScrollPane
         JScrollPane scrollPane = new JScrollPane(tabela);
@@ -54,8 +68,8 @@ public class Inventario extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String input = textField.getText().trim();
-                    processarInput(input);
-                    textField.setText("");
+                processarInput(input);
+                textField.setText("");
             }
         });
 
@@ -70,7 +84,7 @@ public class Inventario extends JFrame {
 
                 if (row == -1) {
                     JOptionPane.showMessageDialog(
-                            Inventario.this,
+                            Iniciativa.this,
                             "Nenhum item selecionado!",
                             "Erro",
                             JOptionPane.ERROR_MESSAGE
@@ -81,27 +95,27 @@ public class Inventario extends JFrame {
             }
         });
         setVisible(true);
-}
+    }
 
     private void processarInput(String input) {
         try {
-        String[] partes = input.split(",");
-        if (partes.length != 4) {
-            throw new IllegalArgumentException("Formato Inválido!");
-        }
+            String[] partes = input.split(",");
+            if (partes.length != 2) {
+                throw new IllegalArgumentException("Formato Inválido!");
+            }
 
-        String nome = partes[0].trim();
-        String quantidade = partes[1].trim();
-        String peso = partes[2].trim();
-        String custo = partes[3].trim();
+            String entidade = partes[0].trim();
+            String iniciativa = partes[1].trim();
 
-        model.addRow(new Object[]{nome, quantidade, peso, custo});
-    } catch (IllegalArgumentException e) {
+            model.addRow(new Object[]{entidade, iniciativa});
+        } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Erro: Formato inválido. Use: Nome,Quantidade,Peso,Custo",
+                    "Erro: Formato inválido. Use: Entidade, Iniciativa",
                     "Erro",
                     JOptionPane.ERROR_MESSAGE
             );
         }
-}}
+    }
+}
+
